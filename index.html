@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('serviceWorker.js')
+      .then(() => console.log('Service Worker зареєстровано'))
+      .catch(err => console.error('Service Worker помилка:', err));
+  }
+</script>
+
+  <title>Запис</title>
+  <style>
+    body {
+      background: white;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 24px;
+    }
+
+    .entry {
+      margin: 10px 0;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 60px;
+      padding: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+    }
+
+    .emoji-select {
+      display: flex;
+      justify-content: start;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .emoji-select label {
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      background: #222;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 30px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    li {
+      background: #f4f4f4;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-left: 5px solid #aaa;
+      border-radius: 6px;
+      white-space: pre-wrap;
+    }
+
+    .center-message {
+      font-size: 20px;
+      margin: 30px 0;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Емоції дня</h1>
+
+  <div class="entry">
+    <textarea id="field1"></textarea>
+    <div class="emoji-select">
+      <label><input type="radio" name="emoji1" value="👍"> 👍</label>
+      <label><input type="radio" name="emoji1" value="👎"> 👎</label>
+    </div>
+  </div>
+
+  <div class="entry">
+    <textarea id="field2"></textarea>
+    <div class="emoji-select">
+      <label><input type="radio" name="emoji2" value="👍"> 👍</label>
+      <label><input type="radio" name="emoji2" value="👎"> 👎</label>
+    </div>
+  </div>
+
+  <div class="entry">
+    <textarea id="field3"></textarea>
+    <div class="emoji-select">
+      <label><input type="radio" name="emoji3" value="👍"> 👍</label>
+      <label><input type="radio" name="emoji3" value="👎"> 👎</label>
+    </div>
+  </div>
+
+  <div class="center-message">- цеsй день було прожито</div>
+
+  <button onclick="saveEntry()">Зберегти</button>
+
+  <button onclick="saveEntry()">Зберегти</button>
+<button onclick="clearEntries()" style="margin-top:10px; background: #bbb; color: #000;">Очистити історію</button>
+
+
+  <ul id="log"></ul>
+
+  <script>
+    function saveEntry() {
+  const fields = [
+    { text: document.getElementById('field1').value.trim(), emoji: document.querySelector('input[name="emoji1"]:checked')?.value || '' },
+    { text: document.getElementById('field2').value.trim(), emoji: document.querySelector('input[name="emoji2"]:checked')?.value || '' },
+    { text: document.getElementById('field3').value.trim(), emoji: document.querySelector('input[name="emoji3"]:checked')?.value || '' }
+  ];
+
+  // Видаляємо пусті поля
+  const filteredFields = fields.filter(entry => entry.text !== '');
+
+  // Якщо всі поля порожні — не зберігати нічого
+  if (filteredFields.length === 0) {
+    alert("Заповни хоча б одне поле.");
+    return;
+  }
+
+  const date = new Date().toLocaleDateString();
+
+  const entry = {
+    date,
+    responses: filteredFields
+  };
+
+  const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+  log.unshift(entry);
+  localStorage.setItem('moodLog', JSON.stringify(log));
+  showEntries();
+
+  // Очистити поля після збереження
+  ['field1', 'field2', 'field3'].forEach(id => document.getElementById(id).value = '');
+  ['emoji1','emoji2','emoji3'].forEach(name => {
+    const selected = document.querySelector(`input[name="${name}"]:checked`);
+    if (selected) selected.checked = false;
+  });
+}
+
+function clearEntries() {
+  if (confirm("Точно видалити всі записи?")) {
+    localStorage.removeItem('moodLog');
+    showEntries();
+  }
+}
+
+
+    function showEntries() {
+      const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+      const list = document.getElementById('log');
+      list.innerHTML = '';
+      log.forEach(entry => {
+        const li = document.createElement('li');
+        li.innerHTML = `<b>${entry.date}</b><br>` + entry.responses.map(r => `${r.emoji || '—'} ${r.text}`).join('<br>');
+        list.appendChild(li);
+      });
+    }
+
+    showEntries();
+  </script>
+
+</body>
+</html>
