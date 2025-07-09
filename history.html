@@ -1,0 +1,426 @@
+  <!DOCTYPE html>
+  <html lang="uk">
+  <head>
+    <link rel="stylesheet" href="header_styles.css">
+    <!-- Стандартна favicon -->
+  <link rel="icon" href="favicon.png" type="image/png">
+
+  <!-- Для Apple (iPhone, iPad) -->
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <!-- Для Android/Chrome на домашньому екрані -->
+  <meta name="theme-color" content="#ffffff">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="НазваДодатку">
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="manifest" href="manifest.json">
+    <title>Історія</title>
+    
+
+    <style>
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        max-width: 600px;
+        width: 100%;
+      }
+
+      li {
+        position: relative;
+        margin-bottom: 10px;
+        padding: 10px 40px 10px 10px;
+        border-left: 5px solid #aaa;
+        border-radius: 6px;
+        white-space: pre-wrap;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .delete-btn {
+        position: absolute;
+        top: 0px;
+        right: -18%;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        font-size: 14px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      a {
+        margin-top: 20px;
+        text-decoration: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+      }
+
+    .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Стиль заголовка */
+  .history-header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  /* Контейнер-кнопка, що створює рамку і тінь, але не клікабельна */
+  .clear-btn-container {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 18px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    
+    /* Біло-молочний градієнт */
+    background: linear-gradient(135deg, #f9f9f9 0%, #f0ece6 100%);
+    
+    user-select: none;
+    pointer-events: none; /* блокує кліки на контейнер */
+    transition: box-shadow 0.3s ease;
+  }
+
+
+  /* При наведенні легка "глибина" */
+  .clear-btn-container:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  /* Власне кнопка видаляти */
+  .clear-btn {
+    pointer-events: auto; /* дозволяє кліки всередині */
+    background: #ff4d4d;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 20px;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
+
+  .clear-btn:hover {
+    background: #e60000;
+  }
+
+
+  .clear-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .clear-btn:hover {
+    background: #c62828;
+  }
+
+
+  .toast {
+    visibility: hidden;
+    min-width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 12px 18px;
+    position: fixed;
+    z-index: 10000;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.5s ease, bottom 0.5s ease;
+  }
+
+  .toast.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px;
+  }
+
+    </style>
+
+    
+  </head>
+  <body>
+
+  <div id="undo-toast" style="
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    background: #333;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 8px;
+    display: none;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: opacity 0.3s ease, transform 0.3s ease;">
+    <span id="undo-text">Ваша історія очищуєтся. </span>
+    <button onclick="undoClear()" style="
+      margin-left: 20px;
+      background: crimson;
+      border: none;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    ">Скасувати</button>
+  </div>
+
+
+
+  <div class="nav-bar">
+    <button onclick="location.href='index.html'">
+      <div class="icon">🏠</div>
+      <div class="label">Головна</div>
+    </button>
+    <button onclick="location.href='habits.html'">
+      <div class="icon">📅</div>
+      <div class="label">Звички</div>
+    </button>
+    <button onclick="location.href='history.html'">
+      <div class="icon">📖</div>
+      <div class="label">Історія</div>
+    </button>
+  </div>
+
+
+  <div id="clear-history-container">
+    <h1 id="entry-heading" onclick="clearEntries()">
+      Очистити історію
+    </h1>
+  </div>
+
+
+  <div id="empty-message" style="
+    display: none;
+    text-align: center;
+    margin-top: 100px;
+    font-size: 20px;
+    color: #666;
+    font-style: italic;
+    user-select: none;
+  ">
+    Історія записів порожня.
+  </div>
+
+  <div id="entries-container"></div>
+
+
+    <ul id="log"></ul>
+    <div id="toast" class="toast"></div>
+
+    <script>
+
+      function showToast(message, duration = 3000) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, duration);
+  }
+
+    function showEntries() {
+    const container = document.getElementById('entries-container');
+    const message = document.getElementById('empty-message');
+    const clearButtonContainer = document.getElementById('clear-history-container');
+    container.innerHTML = '';
+
+    const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+
+    if (log.length === 0) {
+      message.style.display = 'block';
+      if (clearButtonContainer) clearButtonContainer.style.display = 'none';
+      return;
+    } else {
+      message.style.display = 'none';
+      if (clearButtonContainer) clearButtonContainer.style.display = 'block';
+    }
+
+    log.forEach((entry, dayIndex) => {
+
+      const entryDiv = document.createElement('div');
+      entryDiv.style.marginBottom = '20px';
+      entryDiv.style.borderLeft = '5px solid #aaa';
+      entryDiv.style.paddingLeft = '10px';
+
+      const dateEl = document.createElement('div');
+      dateEl.textContent = `Начіркав: ${entry.date}`;
+      dateEl.style.fontWeight = 'bold';
+      dateEl.style.marginBottom = '6px';
+      entryDiv.appendChild(dateEl);
+      
+
+      const list = document.createElement('ul');
+      list.style.listStyle = 'none';
+      list.style.padding = '0';
+
+      entry.responses.forEach((response, responseIndex) => {
+
+    const item = document.createElement('li');
+
+// Створюємо контейнер для тексту й кнопки
+item.innerHTML = `
+  <span class="entry-text">${response.text} ${response.emoji || ''}</span>
+  <button class="delete-btn" title="Видалити запис">❌</button>
+`;
+
+const deleteBtn = item.querySelector('.delete-btn');
+deleteBtn.onclick = () => deleteSingleResponse(dayIndex, responseIndex);
+
+list.appendChild(item);
+    });
+
+
+      entryDiv.appendChild(list);
+      container.appendChild(entryDiv);
+    });
+  }
+
+
+
+
+      function deleteEntry(index) {
+        const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+        if (confirm("Видалити цей запис?")) {
+          log.splice(index, 1);
+          localStorage.setItem('moodLog', JSON.stringify(log));
+          showEntries();
+        }
+      }
+
+    function deleteSingleResponse(dayIndex, responseIndex) {
+    const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+
+    if (!log[dayIndex] || !log[dayIndex].responses[responseIndex]) return;
+
+    const toast = document.getElementById('undo-toast');
+    toast.innerHTML = `
+      <span>Ви впевнені, що хочете видалити запис?</span>
+      <button id="confirm-delete-btn" style="
+        margin-left: 12px;
+        padding: 6px 14px;
+        background: crimson;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      ">Видалити</button>
+    `;
+
+    toast.style.display = 'flex';
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) scale(1)';
+
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+    confirmBtn.onclick = () => {
+      log[dayIndex].responses.splice(responseIndex, 1);
+
+      if (log[dayIndex].responses.length === 0) {
+        log.splice(dayIndex, 1);
+      }
+
+      localStorage.setItem('moodLog', JSON.stringify(log));
+      showEntries();
+      hideUndoToast();
+      showToast("Запис видалено.");
+    };
+
+    clearTimeout(undoTimeout);
+    undoTimeout = setTimeout(() => {
+      hideUndoToast();
+    }, 8000);
+  }
+
+
+      showEntries();
+
+
+  let undoTimeout;
+  let backupLog = null;
+
+  function clearEntries() {
+    const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+    if (log.length === 0) {
+      showToast("Немає записів для видалення.");
+      return;
+    }
+
+    backupLog = log;
+
+    const toast = document.getElementById('undo-toast');
+    toast.innerHTML = `
+    <span>Ви впевнені, що хочете очистити історію?</span>
+    <button id="confirm-clear-btn" style="border: 2px solid var(--bg-saveanconfirm); padding: 8px 4px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 12px;">
+      Підтвердити
+    </button>
+  `;
+
+    toast.style.display = 'flex';
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) scale(1)';
+
+    const confirmBtn = document.getElementById('confirm-clear-btn');
+    confirmBtn.addEventListener('click', () => {
+      localStorage.removeItem('moodLog');
+      showEntries();
+      hideUndoToast();
+      showToast("Усі записи видалено.");
+      clearTimeout(undoTimeout);  // Впевнитися, що таймер очищений
+    });
+
+    // Якщо користувач не натисне "Підтвердити", приховати toast через 8 сек
+    undoTimeout = setTimeout(() => {
+      hideUndoToast();
+    }, 8000);
+  }
+
+  function hideUndoToast() {
+    const toast = document.getElementById('undo-toast');
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) scale(0.9)';
+    setTimeout(() => {
+      toast.style.display = 'none';
+      toast.innerHTML = '';
+    }, 300);
+  }
+
+    </script>
+
+    <script defer src="serviceWorker.js"></script>
+  </body>
+  </html>

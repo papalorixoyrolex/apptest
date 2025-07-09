@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>testisquitcc</title>
+
+  <link rel="stylesheet" href="header_styles.css">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="НазваДодатку">
+  <link rel="manifest" href="manifest.json">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('serviceWorker.js')
+        .then(() => console.log('Service Worker зареєстровано'))
+        .catch(err => console.error('Service Worker помилка:', err));
+    }
+  </script>
+
+  <style>
+    body {
+      background: var(--bg-body);
+      color: var(--text-color);
+    }
+
+    .nav-bar button .icon {
+      font-size: 24px;
+    }
+
+    .entry {
+      width: 100%;
+      max-width: 500px;
+      margin: 20px 0;
+      background: #1f1f1f;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .entry textarea {
+      height: 60px;
+      padding: 10px;
+      font-size: 16px;
+      background: #111;
+      color: #eee;
+      border: none;
+      resize: none;
+    }
+
+    .reaction-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .reaction-row button {
+      flex: 1;
+      font-size: 22px;
+      border: none;
+      background: transparent;
+      color: #ccc;
+    }
+
+    .emoji-btn.active {
+      text-shadow: 0 0 0px #fff,
+        -1px -1px 0 #fff,
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff;
+    }
+
+    .delete-btn {
+      color: #b21919;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(40, 40, 40, 0.95);
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="nav-bar">
+    <button onclick="location.href='index.html'"><div class="icon">🏠</div><div class="label">Головна</div></button>
+    <button onclick="location.href='habits.html'"><div class="icon">📅</div><div class="label">Звички</div></button>
+    <button onclick="location.href='history.html'"><div class="icon">📖</div><div class="label">Історія</div></button>
+  </div>
+
+  <h1 id="entry-heading" onclick="addEntry()">Додати поле ➕</h1>
+
+  <div id="entries-container"></div>
+  <button class="button-saveanconfirm" onclick="saveEntry()">Зберегти</button>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    let entryCount = 0;
+
+    function addEntry(text = '', emoji = '') {
+      const container = document.getElementById('entries-container');
+      entryCount++;
+      const id = `field${entryCount}`;
+      const emojiName = `emoji${entryCount}`;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'entry';
+      wrapper.dataset.entryId = id;
+
+      wrapper.innerHTML = `
+        <textarea id="${id}" placeholder="Не банальне за день. Запиши)">${text}</textarea>
+        <div class="reaction-row">
+          <button class="emoji-btn ${emoji === '😭' ? 'active' : ''}" onclick="selectEmoji(this, '${emojiName}', '😭')">😭</button>
+          <button class="delete-btn" onclick="removeEntry('${id}')">🗑</button>
+          <button class="emoji-btn ${emoji === '😊' ? 'active' : ''}" onclick="selectEmoji(this, '${emojiName}', '😊')">😊</button>
+        </div>
+        <input type="hidden" name="${emojiName}" value="${emoji}">
+      `;
+
+      container.appendChild(wrapper);
+    }
+
+    function selectEmoji(button, inputName, value) {
+      const wrapper = button.closest('.reaction-row');
+      wrapper.querySelectorAll('.emoji-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      const hiddenInput = wrapper.parentElement.querySelector(`input[name="${inputName}"]`);
+      if (hiddenInput) hiddenInput.value = value;
+    }
+
+    function removeEntry(id) {
+      const container = document.getElementById('entries-container');
+      const entries = container.querySelectorAll('.entry');
+      if (entries.length <= 1) {
+        showToast("Залиш хоча б одне поле 🙏", 3000);
+        return;
+      }
+      const toRemove = container.querySelector(`[data-entry-id="${id}"]`);
+      if (toRemove) toRemove.remove();
+    }
+
+    function saveEntry() {
+      const entries = document.querySelectorAll('.entry');
+      const responses = [];
+
+      entries.forEach(entry => {
+        const text = entry.querySelector('textarea').value.trim();
+        const emoji = entry.querySelector('input[type="hidden"]').value;
+        if (text) responses.push({ text, emoji });
+      });
+
+      if (responses.length === 0) {
+        showToast("Заповни хоча б одне поле.", 4000);
+        return;
+      }
+
+      const now = new Date();
+      const date = now.toLocaleDateString('uk-UA');
+      const time = now.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+      const dateTime = `${time}, ${date}`;
+
+      const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+      log.unshift({ date: dateTime, responses });
+      localStorage.setItem('moodLog', JSON.stringify(log));
+
+      document.getElementById('entries-container').innerHTML = '';
+      entryCount = 0;
+
+      showToast("Записи збережено в історії.", 3000);
+      setTimeout(() => showToast("~цей день було прожито не дарма~", 5000), 3000);
+
+      addEntry();
+    }
+
+    function showToast(message, duration = 4000) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), duration);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      addEntry();
+    });
+  </script>
+</body>
+</html>

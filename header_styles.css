@@ -1,0 +1,335 @@
+:root {
+  /* 🎨 Основні кольори */
+  
+  --bg-body: #0f0f0f;
+
+  --bg-saveanconfirm: #ff0000;
+  --bg-saveanconfirm-hover: #900000;
+
+  --bg-lightest: #2a2a2a;
+
+  --text-main: #d0d0d0;
+  --text-soft: #888;
+  --text-strong: #fff;
+
+  --accent-yellow: #ffcc00;
+  --accent-red: #ff4d4d;
+  --accent-green: #4CAF50;
+
+  --input-bg: #222;
+  --input-border: #555;
+  --placeholder-color: #888;
+
+  --border-default: #2c2c2c;
+  --shadow: 0 2px 8px rgba(0,0,0,0.5);
+  --radius: 12px;
+  --radius-textarea: 10px;
+
+  /* Фон для звичок*/
+  --bg-blank: #121212; 
+
+  /* 🌈 Градієнт навбару */
+  --nav-gradient: linear-gradient(270deg, #dd2476, #ff512f, #222222, #dd2476);
+  --background-button-underheader: linear-gradient(270deg, #ff512f, #dd2476);
+  --background-button-underheader-hover: linear-gradient(270deg, #ff9966, #ff5e62, #ff512f, #dd2476);
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  user-select: none;
+}
+
+
+.button-saveanconfirm {
+  background-color: var(--bg-saveanconfirm);
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;  
+}
+
+.button-saveanconfirm:hover {
+  -webkit-tap-highlight-color: transparent;
+  background-color: var(--bg-saveanconfirm-hover); 
+}
+
+.nav-bar {
+  -webkit-tap-highlight-color: transparent;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  z-index: 9999;
+  background: var(--nav-gradient);
+  background-size: 800% 800%;
+  animation: gradientShift 10s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
+.nav-bar button {
+  -webkit-tap-highlight-color: transparent;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.nav-bar button:hover {
+  -webkit-tap-highlight-color: transparent;
+  transform: scale(1.15);
+  color: #ffcc00;
+}
+
+.nav-bar .icon {
+  font-size: 38px;
+  line-height: 1;
+}
+
+.nav-bar .label {
+  margin-top: 6px;
+  font-style: italic;
+  font-size: 14px;
+  user-select: none;
+  transform: skew(-15deg);
+}
+
+input, textarea {
+  user-select: text;
+}
+
+body {
+  background: var(--bg-body);
+  color: var(--text-main);
+  user-select: none;
+  margin-top: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+
+/* Легкий сірий відтінок для фону елементів */
+.container, .habit-group, .history-header {
+  background-color: #1e1e1e; /* трохи світліше за фон */
+  border: 1px solid #2c2c2c; /* темно-сіра рамка */
+  border-radius: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.7);
+  color: #ddd;
+}
+
+button { 
+  background: var(--input-bg);
+  color: var(--text-strong);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+/* Для input і textarea */
+textarea, input[type="text"], input[type="radio"] {
+  background-color: #222;
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: var(--radius-textarea);
+}
+
+textarea::placeholder, input::placeholder {
+  color: #888;
+}
+
+/* Навбар — темний, але трохи світліший фон */
+.nav-bar {
+  background-color: #1f1f1f;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+
+/*Вступні кнопки нижче всіх хедерів*/
+#entry-heading {
+  -webkit-tap-highlight-color: transparent;
+  background: var(--background-button-underheader);
+  background-size: 400% 400%;
+  animation: shiftGradient 8s ease infinite;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 18px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  display: inline-block;
+  color: whitesmoke;
+}
+
+/* Ефект при наведенні, щоб підказати що це клік */
+#entry-heading:hover {
+  -webkit-tap-highlight-color: transparent;
+  background: var(--background-button-underheader-hover);
+  background-size: 400% 400%;
+  animation: shiftGradientHover 6s ease infinite;
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes shiftGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shiftGradientHover {
+  0% { background-position: 100% 0%; }
+  50% { background-position: 0% 100%; }
+  100% { background-position: 100% 0%; }
+}
+
+
+.entry-text {
+  flex: 1;
+  word-break: break-word;
+  white-space: pre-wrap;
+  display: inline-block; /* або block, якщо хочеш повну ширину */
+  max-width: 200px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+
+
+
+.container,
+.habit-group,
+.archived-group {
+  background: var(--bg-blank);
+
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  padding: 15px 20px;
+  gap: 12px;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+.entry {
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius-textarea);
+  padding: 0px;
+  gap: 12px;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+.entry textarea {
+border-radius: var(--radius-textarea);
+}
+
+/* Адаптивний контейнер для мобільних */
+@media (max-width: 600px) {
+  body {
+    padding-bottom: 100px;
+    padding: 10px !important;
+    font-size: 16px !important;
+  }
+
+  h1 {
+    font-size: 20px !important;
+    text-align: center;
+  }
+
+  ul, #group-container, #archived-container, .habit-group, .archived-group {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .habit-group{
+    margin: 10px 0px;
+    border-radius: 12px;
+  }
+
+  li {
+    padding-right: 40px;
+    font-size: 14px !important;
+    padding: 8px !important;
+  }
+
+  .habit-input,
+  .title {
+    font-size: 16px !important;
+  }
+
+  .add-block {
+    width: 100% !important;
+    font-size: 28px !important;
+    padding: 10px !important;
+  }
+
+  .clear-btn-container {
+    flex-direction: column !important;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .clear-btn {
+    width: 100% !important;
+    font-size: 18px !important;
+  }
+
+  .nav-bar {
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    position: fixed;
+    width: 100%;
+    z-index: 9999;
+  }
+
+  .nav-bar button {
+    flex: 1 1 33%;
+    font-size: 14px !important;
+    padding: 8px 4px;
+  }
+
+  .toast, #undo-toast {
+    max-width: 90%;
+    font-size: 14px;
+  }
+}
+
+
+input, textarea {
+  background: var(--input-bg);
+  color: var(--text-strong);
+  border: 1px solid var(--input-border);
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: var(--placeholder-color);
+}

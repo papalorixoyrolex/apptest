@@ -1,0 +1,17 @@
+{
+  "name": "Емоції дня",
+  "short_name": "Емоції",
+  "description": "Простий щоденник емоцій",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://emojiapi.dev/api/v1/1f4dd/64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    }
+  ]
+}

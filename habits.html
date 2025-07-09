@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="header_styles.css">
+
+  <!-- Для Apple (iPhone, iPad) -->
+<link rel="apple-touch-icon" href="favicon.png">
+
+<!-- Для Android/Chrome на домашньому екрані -->
+<meta name="theme-color" content="#ffffff">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="НазваДодатку">
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 10px;
+      min-height: 100vh;
+    }
+
+    #group-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+
+    #archived-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+
+.archived-group .title {
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+
+/* Текст звички */
+.archived-group div:nth-child(4) {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: bold;
+  color: #ddd;
+}
+
+/* Дата */
+.archived-group .date-created {
+  font-size: 13px;
+  color: #aaa;
+  text-align: right;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+
+    .habit-group {
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 15px 20px;
+      width: 100%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .habit-group .title {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 20px;
+      outline: none;
+      border: none;
+      background: transparent;
+      user-select: text;
+    }
+
+    .title {
+      cursor: default;
+    }
+
+    .habit-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .date-created {
+      font-size: 14px;
+      color: #666;
+      user-select: none;
+      text-align: right;
+    }
+
+    .add-block {
+      margin: 20px 0 10px 0;
+      width: auto;
+      height: 50px;
+      border: 2px dashed #999;
+      border-radius: 12px;
+      font-size: 36px;
+      color: #444;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.25s ease;
+      padding: 0 30px;
+      font-weight: 600;
+      gap: 10px;
+      background: #ddd;
+    }
+
+    .add-block:hover:not(.disabled) {
+      background-color: #ccc;
+    }
+
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    /* Кнопки у блоках */
+    .btn {
+      position: absolute;
+      top: 10px;
+      font-size: 18px;
+      user-select: none;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    .btn-close {
+      right: 10px;
+      color: #a00;
+    }
+
+    .btn-save {
+      right: 40px;
+      color: #080;
+    }
+
+    .btn-archive-remove {
+      right: 10px;
+      color: #a00;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    #confirm-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: #333;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 10px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  font-size: 16px;
+  max-width: 90%;
+  text-align: center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#confirm-toast button {
+  margin-top: 12px;
+  background: #c62828;
+  border: none;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="nav-bar">
+    <button onclick="location.href='index.html'">
+      <div class="icon">🏠</div>
+      <div class="label">Головна</div>
+    </button>
+    <button onclick="location.href='habits.html'">
+      <div class="icon">📅</div>
+      <div class="label">Звички</div>
+    </button>
+    <button onclick="location.href='history.html'">
+      <div class="icon">📖</div>
+      <div class="label">Історія</div>
+    </button>
+  </div>
+
+  <div id="group-container">
+    <!-- Тут активні блоки звичок -->
+  </div>
+
+  <h1 id="entry-heading">Додати звичку +</h1>
+
+  <div id="archived-container">
+    <!-- Тут збережені, архівовані блоки -->
+  </div>
+
+<script>
+  const STORAGE_KEY = 'habitBlocks';
+  const container = document.getElementById('group-container');
+  const addBtn = document.getElementById('entry-heading');
+  const archivedContainer = document.getElementById('archived-container');
+
+  function saveAllBlocks() {
+    const activeData = [...container.querySelectorAll('.habit-group')].map(block => ({
+      title: block.querySelector('.title').value,
+      habit: block.querySelector('.habit-input').value,
+      date: block.querySelector('.date-created').textContent.replace('Створено: ', '')
+    }));
+
+    const archivedData = [...archivedContainer.querySelectorAll('.archived-group')].map(block => ({
+      title: block.querySelector('.title').textContent,
+      habit: block.querySelector('div:nth-child(4)').textContent,
+      date: block.querySelector('.date-created').textContent.replace('Створено: ', '')
+    }));
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ active: activeData, archived: archivedData }));
+  }
+
+  function loadBlocksFromLocalStorage() {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"active":[],"archived":[]}');
+
+    container.innerHTML = '';
+    archivedContainer.innerHTML = '';
+
+    data.active.forEach(item => {
+      const block = createHabitBlock(item.title, item.habit, item.date);
+      container.appendChild(block);
+    });
+
+    data.archived.forEach(item => {
+      const block = createArchivedBlock(item.title, item.habit, item.date);
+      archivedContainer.appendChild(block);
+    });
+
+    updateAddButtonState();
+  }
+
+  function updateAddButtonState() {
+    addBtn.classList.toggle('disabled', container.children.length >= 3);
+  }
+
+  function createHabitBlock(titleVal = '', habitVal = '', customDate = null) {
+    const now = new Date();
+    const formattedDate = customDate || now.toLocaleDateString('uk-UA', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+
+    const block = document.createElement('div');
+    block.className = 'habit-group';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '❌';
+    closeBtn.className = 'btn btn-close';
+    closeBtn.onclick = () => {
+      block.remove();
+      saveAllBlocks();
+      updateAddButtonState();
+    };
+
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = '✅';
+    saveBtn.className = 'btn btn-save';
+    saveBtn.onclick = () => {
+      archiveBlock(block);
+    };
+
+    const title = document.createElement('input');
+    title.className = 'title';
+    title.placeholder = 'Назва звички';
+    title.maxLength = 50;
+    title.value = titleVal;
+
+    const habitInput = document.createElement('input');
+    habitInput.className = 'habit-input';
+    habitInput.placeholder = 'Введіть звичку (до 100 символів)';
+    habitInput.maxLength = 180;
+    habitInput.value = habitVal;
+
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'date-created';
+    dateDiv.textContent = `Створено: ${formattedDate}`;
+
+    block.append(closeBtn, saveBtn, title, document.createElement('hr'), habitInput, document.createElement('hr'), dateDiv);
+
+    [title, habitInput].forEach(el => el.addEventListener('input', saveAllBlocks));
+
+    return block;
+  }
+
+  function createArchivedBlock(titleVal, habitVal, dateVal) {
+    const block = document.createElement('div');
+    block.className = 'archived-group';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '❌';
+    closeBtn.className = 'btn btn-archive-remove';
+    closeBtn.onclick = () => {
+    showConfirmToast(titleVal, dateVal, () => {
+    block.remove();
+    saveAllBlocks();
+  });
+};
+
+    const title = document.createElement('div');
+    title.className = 'title';
+    title.textContent = titleVal;
+
+    const habitText = document.createElement('div');
+    habitText.textContent = habitVal;
+
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'date-created';
+    dateDiv.textContent = `Створено: ${dateVal}`;
+
+    block.append(closeBtn, title, document.createElement('hr'), habitText, document.createElement('hr'), dateDiv);
+    return block;
+  }
+
+  function archiveBlock(block) {
+    const title = block.querySelector('.title').value.trim();
+    const habit = block.querySelector('.habit-input').value.trim();
+    const date = block.querySelector('.date-created').textContent.replace('Створено: ', '');
+
+    if (!title && !habit) {
+      alert('Неможливо зберегти пусту звичку.');
+      return;
+    }
+
+    const archivedBlock = createArchivedBlock(title, habit, date);
+    archivedContainer.appendChild(archivedBlock);
+    block.remove();
+    saveAllBlocks();
+    updateAddButtonState();
+  }
+
+  addBtn.addEventListener('click', () => {
+    if (container.children.length >= 3) {
+      alert('Можна додати максимум 3 звички.');
+      return;
+    }
+    const newBlock = createHabitBlock();
+    container.appendChild(newBlock);
+    saveAllBlocks();
+    updateAddButtonState();
+  });
+
+  window.addEventListener('DOMContentLoaded', loadBlocksFromLocalStorage);
+
+  let toastTimeout = null;
+
+function showConfirmToast(title, date, onConfirm) {
+  const toast = document.getElementById('confirm-toast');
+  const message = document.getElementById('confirm-message');
+  const confirmBtn = document.getElementById('confirm-delete');
+
+  message.textContent = `Ви справді бажаєте видалити "${title}" від ${date}?`;
+
+  // Очистити попередній обробник
+  const newBtn = confirmBtn.cloneNode(true);
+  confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+
+  newBtn.onclick = () => {
+    hideConfirmToast();
+    onConfirm();
+  };
+
+  toast.style.display = 'block';
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) scale(1)';
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    hideConfirmToast();
+  }, 5000);
+}
+
+function hideConfirmToast() {
+  const toast = document.getElementById('confirm-toast');
+  toast.style.opacity = '0';
+  toast.style.transform = 'translateX(-50%) scale(0.9)';
+  setTimeout(() => toast.style.display = 'none', 300);
+}
+
+</script>
+
+<div id="confirm-toast">
+  <div id="confirm-message">Ви справді бажаєте видалити?</div>
+  <button id="confirm-delete">Так</button>
+</div>
+
+</body>
+
+</html>
