@@ -20,7 +20,7 @@
   --input-border: #555;
   --placeholder-color: #888;
 
-  --size-transform: var(--size-transform);
+  --size-transform: scale(1.18);
 
   --border-default: #2c2c2c;
   --shadow: 0 2px 8px rgba(0,0,0,0.5);
