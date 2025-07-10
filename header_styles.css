@@ -336,3 +336,106 @@ textarea::placeholder,
 input::placeholder {
   color: var(--placeholder-color);
 }
+
+/* ----- ФОРМА ----‑ */
+#task-form {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-blank);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  width: calc(100% - 40px);
+  max-width: 600px;
+  margin-bottom: 24px;
+}
+
+#task-form input,
+#task-form textarea {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-strong);
+  border-radius: var(--radius-textarea);
+  padding: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+#task-form input::placeholder,
+#task-form textarea::placeholder {
+  color: var(--placeholder-color);
+}
+
+#task-form button {
+  font-weight: 600;
+  color: var(--text-strong);
+  background: var(--background-button-underheader);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  border: none;
+  transition: background 0.3s;
+}
+#task-form button:hover {
+  background: var(--background-button-underheader-hover);
+}
+
+/* ----- БЛАНК ЗАВДАННЯ ----‑ */
+.task {
+  background: var(--bg-lightest);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.task .title,
+.task .criteria,
+.task .description {
+  color: var(--text-main);
+  margin-bottom: 8px;
+  word-wrap: break-word;
+}
+
+.task-actions {
+  display: flex;
+  justify-content: space-between;  /* кнопки по краях */
+  align-items: center;
+  width: 100%;                     /* займає всю ширину бланку */
+  padding-top: 10px;                 /* відступи зліва/справа */
+  box-sizing: border-box;
+}
+
+.task-actions button {
+  flex: 0 0 auto; 
+  background: var(--accent-yellow);
+  color: var(--text-strong);
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-textarea);
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.task-actions button:hover {
+  background: var(--accent-green);
+}
+
+.task-actions .delete-btn {
+  margin-right: auto;              /* ❌ праворуч від лівого краю */
+}
+.task-actions .complete-btn {
+  margin-left: auto;               /* “Позначити виконаним” від краю праворуч */
+}
+
+/* ----- АРХІВ ----‑ */
+.task-archive {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 24px;
+}
+

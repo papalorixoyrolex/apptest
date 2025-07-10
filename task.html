@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <title>testisquitcc</title>
 
   <link rel="stylesheet" href="header_styles.css">
@@ -13,357 +15,228 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="НазваДодатку">
   <link rel="manifest" href="manifest.json">
+  <style>
+    /* Toast container */
+    #toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+    }
+    .toast {
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      max-width: 300px;
+      animation: fadein 0.3s;
+    }
+    .toast button {
+      margin-top: 8px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .toast .confirm-btn {
+      background: #4CAF50;
+      color: #fff;
+    }
+    @keyframes fadein { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
 
- <style>
-    /* Сучасний стиль завдання */
-.task {
-  background: linear-gradient(to right, #ffffff, #f9f9f9);
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-  padding: 18px 20px;
-  max-width: 520px;
-  margin: 15px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-family: 'Inter', system-ui, sans-serif;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
+    /* Form styles */
+    #cancel-btn { background: #e0e0e0; }
+    #save-task-btn { background: #4CAF50; color: white; }
 
-.task:hover {
-  transform: scale(1.01);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-}
+    /* Archive hidden */
+    #archive-container { display: none; margin-top: 20px; }
+    #archive-container.visible { display: block; }
 
-.task.completed, .task.archived {
-  background: linear-gradient(to right, #e0f8e0, #d0f0d0);
-  opacity: 0.95;
-}
-
-.task span {
-  font-size: 15px;
-  line-height: 1.4;
-}
-
-.task .title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-}
-
-.task .criteria {
-  font-style: italic;
-  color: #666;
-}
-
-.task-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-}
-
-.task-actions button {
-  padding: 6px 12px;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.2s;
-}
-
-.task-actions button:hover {
-  opacity: 0.85;
-}
-
-.task-actions .complete-btn {
-  background-color: #4caf50;
-  color: white;
-}
-
-.task-actions .delete-btn {
-  background-color: #f44336;
-  color: white;
-}
-
-#task-form {
-  max-width: 520px;
-  margin: 20px auto;
-  background: #fff8dc;
-  padding: 18px 20px;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-}
-
-#task-form input,
-#task-form textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-  box-sizing: border-box;
-  background: #fff;
-}
-
-#task-form textarea {
-  resize: none;
-}
-
-#task-form button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-#cancel-btn {
-  background-color: #ddd;
-  color: #333;
-}
-
-#save-task-btn {
-  background-color: #2196f3;
-  color: white;
-}
-
-#add-task-btn {
-  display: block;
-  margin: 20px auto 10px;
-  padding: 10px 18px;
-  background-color: #673ab7;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
-
-#add-task-btn:hover {
-  background-color: #5e35b1;
-}
-
-#toggle-archive-btn {
-  cursor: pointer;
-  user-select: none;
-  margin: 30px auto 10px;
-  text-align: center;
-  color: #444;
-  font-size: 18px;
-}
-
-.task-archive {
-  width: 100%;
-  max-width: 520px;
-  display: none;
-  opacity: 0;
-  margin: 0 auto 40px;
-  transition: opacity 0.3s ease;
-}
-
-.task-archive.visible {
-  display: block;
-  opacity: 1;
-}
-
+    /* Task card */
+    .task-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; max-width: 400px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 20px; transition: opacity 0.2s; }
+    .task-card.completed { opacity: 0.6; }
+    .field { margin-bottom: 12px; }
+    .value { padding-left: 8px; color: #555; line-height: 1.4; }
+    .task-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+    .delete-btn, .complete-btn, .success-btn { padding: 6px 12px; font-size: 14px; border: none; border-radius: 6px; cursor: pointer; }
+    .delete-btn { background: #e0e0e0; }
+    .complete-btn { background: #4CAF50; color: white; }
+    .success-btn { background: #2196F3; color: white; cursor: default; }
   </style>
 </head>
 <body>
-    <div class="nav-bar">
+  <div class="nav-bar">
     <button onclick="location.href='index.html'"><div class="icon">✍️</div><div class="label">Записи</div></button>
     <button onclick="location.href='task.html'"><div class="icon">📜</div><div class="label">Цілі</div></button>
     <button onclick="location.href='habits.html'"><div class="icon">📅</div><div class="label">Звички</div></button>
     <button onclick="location.href='history.html'"><div class="icon">📖</div><div class="label">Історія</div></button>
   </div>
-  <button id="add-task-btn" style="margin-bottom: 20px;">Додати</button>
 
-  <!-- Форма створення нового завдання -->
+  <button id="add-task-btn" style="margin-bottom:20px;">Додати</button>
+
   <form id="task-form">
-    <input type="text" id="title-input" placeholder="Надайте назву завданню" maxlength="30" required />
-    <input type="text" id="criteria-input" placeholder="Коли вважатиметься виконаним?" />
-    <textarea id="description-input" placeholder="Опишіть його" rows="3" style="resize:none"></textarea>
+    <input type="text" id="title-input" autocomplete="off" placeholder="Мета" maxlength="30" required />
+    <input type="text" id="trigger-input" autocomplete="off" placeholder="Тригер" />
+    <textarea id="details-input" placeholder="Деталі" rows="3" style="resize:none"></textarea>
     <div style="display:flex; gap:10px; justify-content:flex-end;">
       <button type="button" id="cancel-btn">Відмінити</button>
       <button type="submit" id="save-task-btn">Зберегти завдання</button>
     </div>
   </form>
 
-  <!-- Контейнер активних завдань -->
   <div id="task-container"></div>
-
-  <!-- Кнопка відображення архіву -->
-  <h1 id="toggle-archive-btn" style="display:none;">Відобразити архів</h1>
-
-  <!-- Контейнер архіву -->
-  <div class="task-archive" id="archive-container"></div>
-
+  <h1 id="toggle-archive-btn" style="display:none; cursor:pointer;">Відобразити архів</h1>
+  <div id="archive-container"></div>
+  <div id="toast-container"></div>
 <script>
-const STORAGE_KEY = 'taskListV3';
+  const STORAGE_KEY = 'taskListV3';
+  const addBtn = document.getElementById('add-task-btn');
+  const taskForm = document.getElementById('task-form');
+  const titleInput = document.getElementById('title-input');
+  const triggerInput = document.getElementById('trigger-input');
+  const detailsInput = document.getElementById('details-input');
+  const cancelBtn = document.getElementById('cancel-btn');
+  const taskContainer = document.getElementById('task-container');
+  const archiveContainer = document.getElementById('archive-container');
+  const toggleArchiveBtn = document.getElementById('toggle-archive-btn');
+  const toastContainer = document.getElementById('toast-container');
 
-const addBtn = document.getElementById('add-task-btn');
-const taskForm = document.getElementById('task-form');
-const titleInput = document.getElementById('title-input');
-const criteriaInput = document.getElementById('criteria-input');
-const descriptionInput = document.getElementById('description-input');
-const cancelBtn = document.getElementById('cancel-btn');
-const saveTaskBtn = document.getElementById('save-task-btn');
+  addBtn.onclick = () => { taskForm.style.display = 'flex'; addBtn.disabled = true; titleInput.focus(); };
+  cancelBtn.onclick = resetForm;
 
-const taskContainer = document.getElementById('task-container');
-const archiveContainer = document.getElementById('archive-container');
-const toggleArchiveBtn = document.getElementById('toggle-archive-btn');
+  function resetForm() {
+    taskForm.style.display = 'none'; addBtn.disabled = false; titleInput.value = triggerInput.value = detailsInput.value = '';
+  }
 
-// Показати форму створення
-addBtn.onclick = () => {
-  taskForm.style.display = 'flex';
-  addBtn.disabled = true;
-  titleInput.focus();
-};
+  function showToast(message, options = {}) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = message.split('\n').map(line => `<div>${line}</div>`).join('');
 
-// Скасувати
-cancelBtn.onclick = () => resetForm();
+  const timeout = options.timeout || 5000;
 
-function resetForm() {
-  taskForm.style.display = 'none';
-  addBtn.disabled = false;
-  titleInput.value = '';
-  criteriaInput.value = '';
-  descriptionInput.value = '';
+  const remove = () => {
+    if (toast.parentElement) toastContainer.removeChild(toast);
+  };
+
+  if (options.confirm) {
+    const btn = document.createElement('button');
+    btn.className = 'confirm-btn';
+    btn.textContent = 'Підтвердити';
+    btn.onclick = () => {
+      options.onConfirm();
+      remove();
+    };
+    toast.appendChild(btn);
+  }
+
+  // Незалежно від кнопок — зникає через timeout
+  setTimeout(remove, timeout);
+
+  toastContainer.appendChild(toast);
 }
 
-// Створити завдання (без редагування)
-function createTask(data, isArchived) {
-  const task = document.createElement('div');
-  task.className = 'task';
-  if (isArchived) task.classList.add('completed', 'archived');
 
-  const title = document.createElement('span');
-  title.className = 'title';
-  title.textContent = data.title || '';
+  function saveTasks() {
+    const tasks = [], archived = [];
+    document.querySelectorAll('.task-card').forEach(card => {
+      const data = { goal: card.dataset.goal, trigger: card.dataset.trigger, details: card.dataset.details, archived: card.classList.contains('completed') };
+      data.archived ? archived.push(data) : tasks.push(data);
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks, archived }));
+  }
 
-  const criteria = document.createElement('span');
-  criteria.className = 'criteria';
-  criteria.textContent = data.criteria || '';
+  function loadTasks() {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"tasks":[],"archived":[]}');
+    taskContainer.innerHTML = ''; archiveContainer.innerHTML = '';
+    saved.tasks.forEach(d => appendCard(d, false));
+    saved.archived.forEach(d => appendCard(d, true));
+    updateArchiveButton();
+  }
 
-  const description = document.createElement('span');
-  description.className = 'description';
-  description.textContent = data.description || '';
+  function appendCard({ goal, trigger, details }, isArchived) {
+    const card = renderTaskCard({ goal, trigger, details });
+    if (isArchived) { card.classList.add('completed'); archiveContainer.appendChild(card); }
+    else taskContainer.appendChild(card);
+    updateArchiveButton();
+  }
+
+  function renderTaskCard({ goal, trigger, details }) {
+  const card = document.createElement('div');
+  card.className = 'task-card';
+  card.dataset.goal = goal;
+  card.dataset.trigger = trigger;
+  card.dataset.details = details;
+
+  const makeField = (label, text) => {
+    const fld = document.createElement('div');
+    fld.className = 'field';
+    fld.innerHTML = `<div class="label">${label}</div><div class="value">${text}</div>`;
+    return fld;
+  };
+
+  card.append(makeField('Мета:', goal), makeField('Тригер:', trigger), makeField('Деталі:', details));
 
   const actions = document.createElement('div');
   actions.className = 'task-actions';
 
-  if (isArchived) {
-    const doneLabel = document.createElement('span');
-    doneLabel.textContent = 'Виконано';
-    doneLabel.style.color = 'green';
-    doneLabel.style.fontWeight = '600';
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.textContent = '❌';
+  deleteBtn.onclick = () => {
+    showToast('Ви впевнені, що бажаєте видалити мету?', {
+      confirm: true,
+      onConfirm: () => {
+        card.remove();
+        saveTasks();
+        updateArchiveButton();
+      }
+    });
+  };
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.textContent = '❌';
-    deleteBtn.onclick = () => {
-      task.remove();
-      saveTasks();
-      updateArchiveButton();
-    };
+  const completeBtn = document.createElement('button');
+  completeBtn.className = 'complete-btn';
+  completeBtn.textContent = 'Позначити виконаним';
+  completeBtn.onclick = () => {
+    card.classList.add('completed');
+    archiveContainer.appendChild(card);
+    saveTasks();
+    updateArchiveButton();
 
-    actions.append(doneLabel, deleteBtn);
-    archiveContainer.appendChild(task);
-  } else {
-    const completeBtn = document.createElement('button');
-    completeBtn.className = 'complete-btn';
-    completeBtn.textContent = 'Позначити виконаним';
-    completeBtn.onclick = () => {
-      task.classList.add('completed', 'archived');
-      taskContainer.removeChild(task);
-      archiveContainer.appendChild(task);
-      saveTasks();
-      updateArchiveButton();
-    };
+    actions.querySelector('.delete-btn').style.display = 'inline-block';
+    showToast('Вітаємо!\nЗапис переміщено до архіву');
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.textContent = '❌';
-    deleteBtn.onclick = () => {
-      task.remove();
-      saveTasks();
-      updateArchiveButton();
-    };
+    const successText = document.createElement('div');
+    successText.textContent = 'Успіх';
+    successText.className = 'success-text';
+    completeBtn.replaceWith(successText);
+  };
 
-    actions.append(completeBtn, deleteBtn);
-    taskContainer.appendChild(task);
+  actions.append(deleteBtn, completeBtn);
+  card.appendChild(actions);
+
+  return card; // <--- Ось це критично важливо
+}
+
+
+  function updateArchiveButton() {
+    if (archiveContainer.children.length) toggleArchiveBtn.style.display = 'block';
+    else { toggleArchiveBtn.style.display = 'none'; archiveContainer.classList.remove('visible'); }
   }
 
-  task.append(title, criteria, description, actions);
-}
+  toggleArchiveBtn.onclick = () => archiveContainer.classList.toggle('visible');
 
-// Зберегти в localStorage
-function saveTasks() {
-  const tasks = [];
-  const archived = [];
+  taskForm.onsubmit = e => {
+    e.preventDefault(); if (!titleInput.value.trim()) { alert('Введіть мету'); titleInput.focus(); return; }
+    appendCard({ goal: titleInput.value.trim(), trigger: triggerInput.value.trim(), details: detailsInput.value.trim() }, false);
+    saveTasks(); resetForm();
+  };
 
-  document.querySelectorAll('.task').forEach(task => {
-    const data = {
-      title: task.querySelector('.title').textContent,
-      criteria: task.querySelector('.criteria').textContent,
-      description: task.querySelector('.description').textContent,
-      completed: task.classList.contains('completed'),
-      archived: task.classList.contains('archived')
-    };
-
-    if (data.archived) archived.push(data);
-    else tasks.push(data);
-  });
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks, archived }));
-}
-
-// Завантажити з localStorage
-function loadTasks() {
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"tasks":[],"archived":[]}');
-  taskContainer.innerHTML = '';
-  archiveContainer.innerHTML = '';
-  saved.tasks.forEach(data => createTask(data, false));
-  saved.archived.forEach(data => createTask(data, true));
-  updateArchiveButton();
-}
-
-// Обробка форми створення
-taskForm.onsubmit = (e) => {
-  e.preventDefault();
-  if (!titleInput.value.trim()) {
-    alert('Введіть назву завдання');
-    titleInput.focus();
-    return;
-  }
-
-  createTask({
-    title: titleInput.value.trim(),
-    criteria: criteriaInput.value.trim(),
-    description: descriptionInput.value.trim()
-  }, false);
-
-  saveTasks();
-  resetForm();
-};
-
-function updateArchiveButton() {
-  toggleArchiveBtn.style.display = archiveContainer.children.length > 0 ? 'block' : 'none';
-  if (archiveContainer.children.length === 0) {
-    archiveContainer.classList.remove('visible');
-  }
-}
-
-toggleArchiveBtn.onclick = () => {
-  archiveContainer.classList.toggle('visible');
-};
-
-window.addEventListener('DOMContentLoaded', loadTasks);
+  window.addEventListener('DOMContentLoaded', loadTasks);
 </script>
-
 </body>
 </html>
