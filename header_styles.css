@@ -128,6 +128,32 @@ body {
   box-sizing: border-box;
 }
 
+    #task-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+#archive-container {
+  display: none;
+  margin-top: 20px;
+}
+#archive-container.visible {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+
+
 
 /* Легкий сірий відтінок для фону елементів */
 .container, .habit-group, .history-header {
@@ -217,7 +243,7 @@ textarea::placeholder, input::placeholder {
   word-break: break-word;
   white-space: pre-wrap;
   display: inline-block; /* або block, якщо хочеш повну ширину */
-  max-width: 200px;
+  max-width: 300px;
   word-wrap: break-word;
   white-space: normal;
 }
@@ -337,6 +363,10 @@ input::placeholder {
   color: var(--placeholder-color);
 }
 
+#entries-container {
+  max-width: 400px;
+}
+
 /* ----- ФОРМА ----‑ */
 #task-form {
   display: none;
@@ -347,8 +377,8 @@ input::placeholder {
   border-radius: var(--radius);
   padding: 20px;
   box-shadow: var(--shadow);
-  width: calc(100% - 40px);
-  max-width: 600px;
+  width: 100%;
+  max-width: 400px;
   margin-bottom: 24px;
 }
 
@@ -412,8 +442,8 @@ input::placeholder {
 }
 
 .task-actions button {
-  flex: 0 0 auto; 
-  background: var(--accent-yellow);
+  flex: 0 0 auto;
+  background: var(--bg-saveanconfirm);
   color: var(--text-strong);
   padding: 8px 14px;
   border: none;
@@ -422,7 +452,7 @@ input::placeholder {
   transition: background 0.2s;
 }
 .task-actions button:hover {
-  background: var(--accent-green);
+  background: var(--bg-saveanconfirm-hover);
 }
 
 .task-actions .delete-btn {

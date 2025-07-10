@@ -1,4 +1,4 @@
-const CACHE_NAME = 'emotions-store-v1.431';
+const CACHE_NAME = 'emotions-store-v1.6';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
