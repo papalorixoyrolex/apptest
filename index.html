@@ -100,10 +100,22 @@
 <body>
 
   <div class="nav-bar">
-    <button onclick="location.href='index.html'"><div class="icon">✍️</div><div class="label">Записи</div></button>
-    <button onclick="location.href='task.html'"><div class="icon">📜</div><div class="label">Ціліі</div></button>
-    <button onclick="location.href='habits.html'"><div class="icon">📅</div><div class="label">Звички</div></button>
-    <button onclick="location.href='history.html'"><div class="icon">📖</div><div class="label">Історія</div></button>
+    <button data-page="index.html" onclick="location.href='index.html'">
+      <div class="icon">✍️</div>
+      <div class="label">Записи</div>
+    </button>
+    <button data-page="task.html" onclick="location.href='task.html'">
+      <div class="icon">📜</div>
+      <div class="label">Цілі</div>
+    </button>
+    <button data-page="habits.html" onclick="location.href='habits.html'">
+      <div class="icon">📅</div>
+      <div class="label">Звички</div>
+    </button>
+    <button data-page="history.html" onclick="location.href='history.html'">
+      <div class="icon">📖</div>
+      <div class="label">Історія</div>
+    </button>
   </div>
 
   <h1 id="entry-heading" onclick="addEntry()">Додати поле ➕</h1>
@@ -205,6 +217,6 @@
       addEntry();
     });
   </script>
-  <script src="allfiles.js" defer></script>
+<script src="swipe-nav.js"></script>
 </body>
 </html>
