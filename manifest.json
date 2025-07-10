@@ -1,6 +1,6 @@
 {
   "name": "Емоції дня",
-  "short_name": "Емоції",
+  "short_name": "емоцій",
   "description": "Простий щоденник емоцій",
   "start_url": "./index.html",
   "display": "standalone",

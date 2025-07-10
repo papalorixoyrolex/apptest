@@ -1,4 +1,4 @@
-const CACHE_NAME = 'emotions-store-v1.43';
+const CACHE_NAME = 'emotions-store-v1.431';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -8,6 +8,7 @@ const ASSETS_TO_CACHE = [
   '/favicon.png',
   '/habits.html',
   '/history.html',
+  '/task.html',
 ];
 
 self.addEventListener('install', e => {
