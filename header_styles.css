@@ -167,7 +167,8 @@ textarea::placeholder, input::placeholder {
 }
 
 /*Вступні кнопки нижче всіх хедерів*/
-#entry-heading {
+#entry-heading, #entry-heading, #toggle-archive-btn,
+#add-task-btn {
   -webkit-tap-highlight-color: transparent;
   background: var(--background-button-underheader);
   background-size: 400% 400%;
@@ -187,7 +188,10 @@ textarea::placeholder, input::placeholder {
 }
 
 /* Ефект при наведенні, щоб підказати що це клік */
-#entry-heading:hover {
+#entry-heading:hover,
+#entry-heading:hover,
+#toggle-archive-btn:hover,
+#add-task-btn:hover {
   -webkit-tap-highlight-color: transparent;
   background: var(--background-button-underheader-hover);
   background-size: 400% 400%;

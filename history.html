@@ -2,22 +2,15 @@
   <html lang="uk">
   <head>
     <link rel="stylesheet" href="header_styles.css">
-    <!-- Стандартна favicon -->
-  <link rel="icon" href="favicon.png" type="image/png">
-
-  <!-- Для Apple (iPhone, iPad) -->
-  <link rel="apple-touch-icon" href="favicon.png">
-
-  <!-- Для Android/Chrome на домашньому екрані -->
-  <meta name="theme-color" content="#ffffff">
-
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="НазваДодатку">
-
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="НазваДодатку">
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="manifest" href="manifest.json">
     <title>Історія</title>
@@ -38,6 +31,7 @@
 
       li {
         position: relative;
+        max-width: 80%;
         margin-bottom: 10px;
         padding: 10px 40px 10px 10px;
         border-left: 5px solid #aaa;
@@ -202,18 +196,10 @@
 
 
   <div class="nav-bar">
-    <button onclick="location.href='index.html'">
-      <div class="icon">🏠</div>
-      <div class="label">Головна</div>
-    </button>
-    <button onclick="location.href='habits.html'">
-      <div class="icon">📅</div>
-      <div class="label">Звички</div>
-    </button>
-    <button onclick="location.href='history.html'">
-      <div class="icon">📖</div>
-      <div class="label">Історія</div>
-    </button>
+    <button onclick="location.href='index.html'"><div class="icon">✍️</div><div class="label">Записи</div></button>
+    <button onclick="location.href='task.html'"><div class="icon">📜</div><div class="label">Завдання</div></button>
+    <button onclick="location.href='habits.html'"><div class="icon">📅</div><div class="label">Звички</div></button>
+    <button onclick="location.href='history.html'"><div class="icon">📖</div><div class="label">Історія</div></button>
   </div>
 
 
@@ -243,17 +229,6 @@
     <div id="toast" class="toast"></div>
 
     <script>
-
-      function showToast(message, duration = 3000) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, duration);
-  }
-
     function showEntries() {
     const container = document.getElementById('entries-container');
     const message = document.getElementById('empty-message');
@@ -409,6 +384,16 @@ list.appendChild(item);
     }, 8000);
   }
 
+  function showToast(message, duration = 3000) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, duration);
+}
+
   function hideUndoToast() {
     const toast = document.getElementById('undo-toast');
     toast.style.opacity = '0';
@@ -422,5 +407,6 @@ list.appendChild(item);
     </script>
 
     <script defer src="serviceWorker.js"></script>
+    <script src="allfiles.js" defer></script>
   </body>
   </html>
