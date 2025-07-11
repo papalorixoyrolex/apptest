@@ -136,62 +136,15 @@
   .clear-btn:hover {
     background: #c62828;
   }
-
-
-  .toast {
-    visibility: hidden;
-    min-width: 200px;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 12px 18px;
-    position: fixed;
-    z-index: 10000;
-    left: 50%;
-    bottom: 30px;
-    transform: translateX(-50%);
-    font-size: 16px;
-    opacity: 0;
-    transition: opacity 0.5s ease, bottom 0.5s ease;
-  }
-
-  .toast.show {
-    visibility: visible;
-    opacity: 1;
-    bottom: 50px;
-  }
-
-    </style>
+</style>
 
     
   </head>
   <body>
 
-  <div id="undo-toast" style="
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) scale(0.9);
-    background: #333;
-    color: white;
-    padding: 14px 24px;
-    border-radius: 8px;
-    display: none;
-    z-index: 9999;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: opacity 0.3s ease, transform 0.3s ease;">
-    <span id="undo-text">Ваша історія очищуєтся. </span>
-    <button onclick="undoClear()" style="
-      margin-left: 20px;
-      background: crimson;
-      border: none;
-      color: white;
-      padding: 6px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-    ">Скасувати</button>
-  </div>
+
+
+
 
 
 
@@ -238,7 +191,6 @@
 
 
     <ul id="log"></ul>
-    <div id="toast" class="toast"></div>
 
     <script>
     function showEntries() {
@@ -311,47 +263,21 @@ list.appendChild(item);
       }
 
     function deleteSingleResponse(dayIndex, responseIndex) {
-    const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
-
-    if (!log[dayIndex] || !log[dayIndex].responses[responseIndex]) return;
-
-    const toast = document.getElementById('undo-toast');
-    toast.innerHTML = `
-      <span>Ви впевнені, що хочете видалити запис?</span>
-      <button id="confirm-delete-btn" style="
-        margin-left: 12px;
-        padding: 6px 14px;
-        background: crimson;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-      ">Видалити</button>
-    `;
-
-    toast.style.display = 'flex';
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateX(-50%) scale(1)';
-
-    const confirmBtn = document.getElementById('confirm-delete-btn');
-    confirmBtn.onclick = () => {
+  showConfirmToast(
+    'Ви впевнені, що хочете видалити цей запис?',
+    () => {
+      const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
       log[dayIndex].responses.splice(responseIndex, 1);
-
       if (log[dayIndex].responses.length === 0) {
         log.splice(dayIndex, 1);
       }
-
       localStorage.setItem('moodLog', JSON.stringify(log));
       showEntries();
-      hideUndoToast();
-      showToast("Запис видалено.");
-    };
+      showToast('Запис видалено.');
+    }
+  );
+}
 
-    clearTimeout(undoTimeout);
-    undoTimeout = setTimeout(() => {
-      hideUndoToast();
-    }, 8000);
-  }
 
 
       showEntries();
@@ -361,50 +287,23 @@ list.appendChild(item);
   let backupLog = null;
 
   function clearEntries() {
-    const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
-    if (log.length === 0) {
-      showToast("Немає записів для видалення.");
-      return;
-    }
-
-    backupLog = log;
-
-    const toast = document.getElementById('undo-toast');
-    toast.innerHTML = `
-    <span>Ви впевнені, що хочете очистити історію?</span>
-    <button id="confirm-clear-btn" style="border: 2px solid var(--bg-saveanconfirm); padding: 8px 4px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 12px;">
-      Підтвердити
-    </button>
-  `;
-
-    toast.style.display = 'flex';
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateX(-50%) scale(1)';
-
-    const confirmBtn = document.getElementById('confirm-clear-btn');
-    confirmBtn.addEventListener('click', () => {
-      localStorage.removeItem('moodLog');
-      showEntries();
-      hideUndoToast();
-      showToast("Усі записи видалено.");
-      clearTimeout(undoTimeout);  // Впевнитися, що таймер очищений
-    });
-
-    // Якщо користувач не натисне "Підтвердити", приховати toast через 8 сек
-    undoTimeout = setTimeout(() => {
-      hideUndoToast();
-    }, 8000);
+  const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+  if (log.length === 0) {
+    showToast("Немає записів для видалення.");
+    return;
   }
 
-  function showToast(message, duration = 3000) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, duration);
+  showConfirmToast(
+    'Ви впевнені, що хочете очистити всю історію?',
+    () => {
+      localStorage.removeItem('moodLog');
+      showEntries();
+      showToast("Усі записи видалено.");
+    }
+  );
 }
+
+
 
   function hideUndoToast() {
     const toast = document.getElementById('undo-toast');
@@ -417,8 +316,9 @@ list.appendChild(item);
   }
 
     </script>
-
+<div id="toast-container"></div>
     <script defer src="serviceWorker.js"></script>
  <script src="swipe-nav.js"></script>
+ 
 </body>
   </html>

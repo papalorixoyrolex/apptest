@@ -30,6 +30,13 @@
   /* Фон для звичок*/
   --bg-blank: #121212; 
 
+  /* ваші базові змінні — можна доповнювати за потреби */
+  --toast-bg: rgba(40, 40, 40, 0.95);
+  --toast-color: #fff;
+  --toast-radius: 12px;
+  --toast-font-size: 16px;
+  --toast-padding: 14px 24px;
+
   /* 🌈 Градієнт навбару */
   --nav-gradient: linear-gradient(270deg, #dd2476, #ff512f, #222222, #dd2476);
   --background-button-underheader: linear-gradient(270deg, #ff512f, #dd2476);
@@ -359,11 +366,11 @@ border-radius: var(--radius-textarea);
     font-size: 14px !important;
     padding: 8px 4px;
   }
-
+/*
   .toast, #undo-toast {
     max-width: 90%;
     font-size: 14px;
-  }
+  }*/
 }
 
 
@@ -482,5 +489,80 @@ input::placeholder {
   width: 100%;
   max-width: 600px;
   margin-top: 24px;
+
 }
+
+
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;           /* 90% ширини вьюпорту */
+  max-width: 400px;      /* обмежуємо максимальну ширину */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  pointer-events: none;  /* щоб кліки «пробивалися», коли тости не показані */
+}
+
+.toast {
+  background: var(--toast-bg);
+  color: var(--toast-color);
+  padding: var(--toast-padding);
+  border-radius: var(--toast-radius);
+  font-size: var(--toast-font-size);
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: auto;
+  text-align: center;
+}
+
+/* коли додаємо клас .show, тост оживає */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* версія з підтвердженням */
+.toast.confirm {
+  display: flex;
+  flex-direction: column;
+}
+
+.toast.confirm button {
+  margin-top: 12px;
+  background: var(--bg-saveanconfirm);
+  border: none;
+  color: var(--toast-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: background 0.2s ease;
+}
+
+.toast.confirm button:hover {
+  background: var(--bg-saveanconfirm-hover);
+}
+.toast .confirm-btn {
+     background: var(--bg-saveanconfirm);
+     color: #fff;
+   margin-top: 8px;
+     padding: 6px 12px;
+     border: none;
+     border-radius: 6px;
+     cursor: pointer;
+   }
+   .toast .confirm-btn:hover {
+     background: var(--bg-saveanconfirm-hover);
+   }
+
+    
+
 

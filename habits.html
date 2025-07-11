@@ -182,36 +182,6 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    #confirm-toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.9);
-  background: #333;
-  color: white;
-  padding: 16px 24px;
-  border-radius: 10px;
-  display: none;
-  z-index: 9999;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  font-size: 16px;
-  max-width: 90%;
-  text-align: center;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-#confirm-toast button {
-  margin-top: 12px;
-  background: #c62828;
-  border: none;
-  color: white;
-  padding: 6px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
-}
-
   </style>
 </head>
 <body>
@@ -251,21 +221,22 @@
   const addBtn = document.getElementById('entry-heading');
   const archivedContainer = document.getElementById('archived-container');
 
-  function saveAllBlocks() {
-    const activeData = [...container.querySelectorAll('.habit-group')].map(block => ({
-      title: block.querySelector('.title').value,
-      habit: block.querySelector('.habit-input').value,
-      date: block.querySelector('.date-created').textContent.replace('Створено: ', '')
-    }));
+ function saveAllBlocks() {
+  const activeData = [...container.querySelectorAll('.habit-group')].map(block => ({
+    title: block.querySelector('.title').value,
+    habit: block.querySelector('.habit-input').value,
+    date: block.querySelector('.date-created').textContent.replace('Створено: ', '')
+  }));
 
-    const archivedData = [...archivedContainer.querySelectorAll('.archived-group')].map(block => ({
-      title: block.querySelector('.title').textContent,
-      habit: block.querySelector('div:nth-child(4)').textContent,
-      date: block.querySelector('.date-created').textContent.replace('Створено: ', '')
-    }));
+  const archivedData = [...archivedContainer.querySelectorAll('.archived-group')].map(block => ({
+    title: block.querySelector('.title').textContent,
+    habit: block.querySelector('div:nth-child(4)').textContent,
+    date: block.querySelector('.date-created').textContent.replace('Створено: ', '')
+  }));
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ active: activeData, archived: archivedData }));
-  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ active: activeData, archived: archivedData }));
+}
+
 
   function loadBlocksFromLocalStorage() {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"active":[],"archived":[]}');
@@ -341,33 +312,42 @@
   }
 
   function createArchivedBlock(titleVal, habitVal, dateVal) {
-    const block = document.createElement('div');
-    block.className = 'archived-group';
+  const block = document.createElement('div');
+  block.className = 'archived-group';
 
-    const closeBtn = document.createElement('button');
-    closeBtn.textContent = '❌';
-    closeBtn.className = 'btn btn-archive-remove';
-    closeBtn.onclick = () => {
-    showConfirmToast(titleVal, dateVal, () => {
-    block.remove();
-    saveAllBlocks();
-  });
-};
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '❌';
+  closeBtn.className = 'btn btn-archive-remove';
+  closeBtn.onclick = () => {
+    showConfirmToast(
+      `Ви справді бажаєте видалити «${titleVal}» від ${dateVal}?`,
+      () => {
+        block.remove();
+        saveAllBlocks();
+      }
+    );
+    // Після 5 с ховаємо
+    setTimeout(() => {
+      // swipe-nav.js видаляє тост за показником duration
+    }, 5000);
+  };
 
-    const title = document.createElement('div');
-    title.className = 'title';
-    title.textContent = titleVal;
+  const title = document.createElement('div');
+  title.className = 'title';
+  title.textContent = titleVal;
 
-    const habitText = document.createElement('div');
-    habitText.textContent = habitVal;
+  const habitText = document.createElement('div');
+  habitText.textContent = habitVal;
 
-    const dateDiv = document.createElement('div');
-    dateDiv.className = 'date-created';
-    dateDiv.textContent = `Створено: ${dateVal}`;
+  const dateDiv = document.createElement('div');
+  dateDiv.className = 'date-created';
+  dateDiv.textContent = `Створено: ${dateVal}`;
 
-    block.append(closeBtn, title, document.createElement('hr'), habitText, document.createElement('hr'), dateDiv);
-    return block;
-  }
+  block.append(closeBtn, title, document.createElement('hr'), habitText, document.createElement('hr'), dateDiv);
+  return block;
+}
+
+
 
   function archiveBlock(block) {
     const title = block.querySelector('.title').value.trim();
@@ -399,49 +379,15 @@
 
   window.addEventListener('DOMContentLoaded', loadBlocksFromLocalStorage);
 
-  let toastTimeout = null;
 
-function showConfirmToast(title, date, onConfirm) {
-  const toast = document.getElementById('confirm-toast');
-  const message = document.getElementById('confirm-message');
-  const confirmBtn = document.getElementById('confirm-delete');
 
-  message.textContent = `Ви справді бажаєте видалити "${title}" від ${date}?`;
-
-  // Очистити попередній обробник
-  const newBtn = confirmBtn.cloneNode(true);
-  confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
-
-  newBtn.onclick = () => {
-    hideConfirmToast();
-    onConfirm();
-  };
-
-  toast.style.display = 'block';
-  toast.style.opacity = '1';
-  toast.style.transform = 'translateX(-50%) scale(1)';
-
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => {
-    hideConfirmToast();
-  }, 5000);
-}
-
-function hideConfirmToast() {
-  const toast = document.getElementById('confirm-toast');
-  toast.style.opacity = '0';
-  toast.style.transform = 'translateX(-50%) scale(0.9)';
-  setTimeout(() => toast.style.display = 'none', 300);
-}
 
 </script>
 
-<div id="confirm-toast">
-  <div id="confirm-message">Ви справді бажаєте видалити?</div>
-  <button id="confirm-delete">Так</button>
-</div>
-
+<div id="toast-container"></div>
 <script src="swipe-nav.js"></script>
+
+
 </body>
 
 </html>

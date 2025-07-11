@@ -72,28 +72,6 @@
     .delete-btn {
       color: #b21919;
     }
-
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(40, 40, 40, 0.95);
-      color: #fff;
-      padding: 14px 24px;
-      border-radius: 12px;
-      font-size: 16px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      z-index: 9999;
-    }
-
-    .toast.show {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) translateY(0);
-    }
   </style>
 </head>
 
@@ -123,7 +101,7 @@
   <div id="entries-container"></div>
   <button class="button-saveanconfirm" onclick="saveEntry()">Зберегти</button>
 
-  <div id="toast" class="toast"></div>
+  
 
   <script>
     let entryCount = 0;
@@ -203,20 +181,11 @@
       addEntry();
     }
 
-    function showToast(message, duration = 3000) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, duration);
-}
-
     document.addEventListener('DOMContentLoaded', () => {
       addEntry();
     });
   </script>
+  <div id="toast-container"></div>
 <script src="swipe-nav.js"></script>
 </body>
 </html>

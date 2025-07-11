@@ -16,36 +16,6 @@
   <meta name="apple-mobile-web-app-title" content="НазваДодатку">
   <link rel="manifest" href="manifest.json">
   <style>
-    /* Toast container */
-    #toast-container {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 9999;
-    }
-    .toast {
-      background: rgba(0,0,0,0.8);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      max-width: 300px;
-      animation: fadein 0.3s;
-    }
-    .toast button {
-      margin-top: 8px;
-      padding: 6px 10px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .toast .confirm-btn {
-      background: #4CAF50;
-      color: #fff;
-    }
     @keyframes fadein { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
 
     /* Form styles */
@@ -97,7 +67,6 @@
   <div id="task-container"></div>
   <h1 id="toggle-archive-btn" style="display:none; cursor:pointer;">Відобразити архів</h1>
   <div id="archive-container"></div>
-  <div id="toast-container"></div>
 <script>
   const STORAGE_KEY = 'taskListV3';
   const addBtn = document.getElementById('add-task-btn');
@@ -117,34 +86,6 @@
   function resetForm() {
     taskForm.style.display = 'none'; addBtn.disabled = false; titleInput.value = triggerInput.value = detailsInput.value = '';
   }
-
-  function showToast(message, options = {}) {
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.innerHTML = message.split('\n').map(line => `<div>${line}</div>`).join('');
-
-  const timeout = options.timeout || 5000;
-
-  const remove = () => {
-    if (toast.parentElement) toastContainer.removeChild(toast);
-  };
-
-  if (options.confirm) {
-    const btn = document.createElement('button');
-    btn.className = 'confirm-btn';
-    btn.textContent = 'Підтвердити';
-    btn.onclick = () => {
-      options.onConfirm();
-      remove();
-    };
-    toast.appendChild(btn);
-  }
-
-  // Незалежно від кнопок — зникає через timeout
-  setTimeout(remove, timeout);
-
-  toastContainer.appendChild(toast);
-}
 
 
   function saveTasks() {
@@ -172,7 +113,7 @@
   updateArchiveButton();
 }
 
-  function renderTaskCard({ goal, trigger, details, archived }) {
+function renderTaskCard({ goal, trigger, details, archived }) {
   const card = document.createElement('div');
   card.className = 'task-card';
   card.dataset.goal = goal;
@@ -197,15 +138,12 @@
   deleteBtn.className = 'delete-btn';
   deleteBtn.textContent = '❌';
   deleteBtn.onclick = () => {
-    showToast('Ви впевнені, що бажаєте видалити мету?', {
-      confirm: true,
-      onConfirm: () => {
-        card.remove();
-        saveTasks();
-        updateArchiveButton();
-      }
-    });
-  };
+  showConfirmToast('Ви впевнені, що бажаєте видалити мету?', () => {
+    card.remove();
+    saveTasks();
+    updateArchiveButton();
+  });
+};
 
   actions.append(deleteBtn);
 
@@ -224,7 +162,7 @@
       saveTasks();
       updateArchiveButton();
 
-      showToast('Вітаємо!\nЗапис переміщено до архіву');
+      showToast('Вітаємо!\nЗапис переміщено до архіву', { timeout: 5000 });
 
       const successText = document.createElement('div');
       successText.textContent = 'Успіх';
@@ -239,6 +177,7 @@
 
   return card;
 }
+
 
 
 
@@ -257,6 +196,7 @@
 
   window.addEventListener('DOMContentLoaded', loadTasks);
 </script>
+<div id="toast-container"></div>
 <script src="swipe-nav.js"></script>
 </body>
 </html>
