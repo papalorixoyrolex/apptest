@@ -350,21 +350,61 @@
 
 
   function archiveBlock(block) {
-    const title = block.querySelector('.title').value.trim();
-    const habit = block.querySelector('.habit-input').value.trim();
-    const date = block.querySelector('.date-created').textContent.replace('Створено: ', '');
+  const titleInput = block.querySelector('.title');
+  const habitInput = block.querySelector('.habit-input');
+  const date = block.querySelector('.date-created').textContent.replace('Створено: ', '');
 
-    if (!title && !habit) {
-      alert('Неможливо зберегти пусту звичку.');
-      return;
-    }
+  const title = titleInput.value.trim();
+  const habit = habitInput.value.trim();
 
-    const archivedBlock = createArchivedBlock(title, habit, date);
-    archivedContainer.appendChild(archivedBlock);
-    block.remove();
-    saveAllBlocks();
-    updateAddButtonState();
+  if (!title) {
+    showToast('Назва звички обов’язкова.');
+    return;
   }
+
+  // створюємо блок архіву
+  const archivedBlock = document.createElement('div');
+  archivedBlock.className = 'archived-group';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '❌';
+  closeBtn.className = 'btn btn-archive-remove';
+  closeBtn.onclick = () => {
+    showConfirmToast(
+      `Ви справді бажаєте видалити «${title}» від ${date}?`,
+      () => {
+        archivedBlock.remove();
+        saveAllBlocks();
+      }
+    );
+  };
+
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'title';
+  titleDiv.textContent = title;
+
+  const dateDiv = document.createElement('div');
+  dateDiv.className = 'date-created';
+  dateDiv.textContent = `Створено: ${date}`;
+
+  // Додаємо елементи
+  archivedBlock.append(closeBtn, titleDiv);
+
+  if (habit) {
+    const hr = document.createElement('hr');
+    const habitText = document.createElement('div');
+    habitText.textContent = habit;
+    archivedBlock.append(hr, habitText);
+  }
+
+  archivedBlock.append(document.createElement('hr'), dateDiv);
+
+  archivedContainer.appendChild(archivedBlock);
+  block.remove();
+  saveAllBlocks();
+  updateAddButtonState();
+}
+
 
   addBtn.addEventListener('click', () => {
     if (container.children.length >= 3) {

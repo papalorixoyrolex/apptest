@@ -23,7 +23,7 @@
     #save-task-btn { background: #4CAF50; color: white; }
 
     /* Task card */
-    .task-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; max-width: 400px; width: 100%; background: var(--bg-lightest); box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 20px; transition: opacity 0.2s; }
+    .task-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; max-width: 360px; width: 100%; background: var(--bg-lightest); box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 20px; transition: opacity 0.2s; }
     .task-card.completed { opacity: 0.6;}
     .field { margin-bottom: 12px; }
     .value { padding-left: 8px; color: #555; line-height: 1.4; }
@@ -162,7 +162,7 @@ function renderTaskCard({ goal, trigger, details, archived }) {
       saveTasks();
       updateArchiveButton();
 
-      showToast('Вітаємо!\nЗапис переміщено до архіву', { timeout: 5000 });
+      showToast('Вітаю!!\nЗберіг запис в архів.', 2000);
 
       const successText = document.createElement('div');
       successText.textContent = 'Успіх';
@@ -189,10 +189,31 @@ function renderTaskCard({ goal, trigger, details, archived }) {
   toggleArchiveBtn.onclick = () => archiveContainer.classList.toggle('visible');
 
   taskForm.onsubmit = e => {
-    e.preventDefault(); if (!titleInput.value.trim()) { alert('Введіть мету'); titleInput.focus(); return; }
-    appendCard({ goal: titleInput.value.trim(), trigger: triggerInput.value.trim(), details: detailsInput.value.trim() }, false);
-    saveTasks(); resetForm();
-  };
+  e.preventDefault();
+
+  const goal = titleInput.value.trim();
+  let trigger = triggerInput.value.trim();
+  let details = detailsInput.value.trim();
+
+  if (!goal) {
+    alert('Введіть мету');
+    titleInput.focus();
+    return;
+  }
+
+  if (!trigger) {
+    trigger = "🤓Тригер - показник, після котрого мета вважатимется досягнутою.";
+  }
+
+  if (!details) {
+    details = "Не забувайте деталізувати вашу мету, аби спрощувати шлях до неї.";
+  }
+
+  appendCard({ goal, trigger, details }, false);
+  saveTasks();
+  resetForm();
+};
+
 
   window.addEventListener('DOMContentLoaded', loadTasks);
 </script>

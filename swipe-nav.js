@@ -1,102 +1,93 @@
 (function() {
-  // список ваших файлів в порядку навігації
+  // ======= NAVIGATION BY SWIPE & ACTIVE BUTTON =======
   const pages = ['index.html', 'task.html', 'habits.html', 'history.html'];
-
-  // поточний файл
   const currentFile = window.location.pathname.split('/').pop();
   const currentIndex = pages.indexOf(currentFile);
 
-  // знайти всі кнопки і проставити active
-  const buttons = document.querySelectorAll('.nav-bar button');
-  buttons.forEach(btn => {
+  // Активна кнопка
+  document.querySelectorAll('.nav-bar button').forEach(btn => {
     if (btn.dataset.page === currentFile) {
       btn.classList.add('active');
     }
   });
 
-  // якщо не мобільний — свайп не потрібен
-  if (!('ontouchstart' in window)) return;
-
-  let startX = 0;
-  const threshold = 50; // мінімальна відстань для свайпу
-
-  document.addEventListener('touchstart', e => {
-    startX = e.changedTouches[0].screenX;
-  });
-
-  document.addEventListener('touchend', e => {
-    const endX = e.changedTouches[0].screenX;
-    const diff = endX - startX;
-
-    // свайп вліво → наступна сторінка
-    if (diff < -threshold && currentIndex < pages.length - 1) {
-      window.location.href = pages[currentIndex + 1];
-    }
-    // свайп вправо → попередня сторінка
-    else if (diff > threshold && currentIndex > 0) {
-      window.location.href = pages[currentIndex - 1];
-    }
-  });
-})();
+  // Swipe only on touch devices
+  if ('ontouchstart' in window) {
+    let startX = 0;
+    const threshold = 50;
+    document.addEventListener('touchstart', e => {
+      startX = e.changedTouches[0].screenX;
+    });
+    document.addEventListener('touchend', e => {
+      const diff = e.changedTouches[0].screenX - startX;
+      if (diff < -threshold && currentIndex < pages.length - 1) {
+        window.location.href = pages[currentIndex + 1];
+      } else if (diff > threshold && currentIndex > 0) {
+        window.location.href = pages[currentIndex - 1];
+      }
+    });
+  }
 
 
-
-(function() {
-  // контейнер для всіх тостів
+  // ======= TOASTS =======
+  // створюємо контейнер один раз
   const container = document.createElement('div');
   container.id = 'toast-container';
   document.body.append(container);
 
-  /**
-   * Створює і показує простий тост
-   * @param {string} text — текст повідомлення
-   * @param {number} duration — час у мс до зникнення
-   */
-  window.showToast = function(text, duration = 3000) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = text;
-    container.append(toast);
+  window.showToast = function(text, duration = 2000) {
+  container.innerHTML = '';
 
-    // анімація появи
-    requestAnimationFrame(() => toast.classList.add('show'));
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerText = text;
+  container.append(toast);
 
-    // через duration видаляємо
-    setTimeout(() => {
-      toast.classList.remove('show');
-      toast.addEventListener('transitionend', () => toast.remove(), { once: true });
-    }, duration);
-  };
+  requestAnimationFrame(() => toast.classList.add('show'));
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+  }, duration);
+};
+
 
   /**
-   * Створює і показує тост з кнопкою підтвердження
-   * @param {string} text — текст повідомлення
-   * @param {Function} onConfirm — колбек при натисканні «OK»
+   * Тост з кнопкою підтвердження
+   * @param {string} text — повідомлення
+   * @param {Function} onConfirm — колбек «Так»
    */
   window.showConfirmToast = function(text, onConfirm) {
+    // Видаляємо всі попередні
+    container.innerHTML = '';
+
     const toast = document.createElement('div');
     toast.className = 'toast confirm';
+
     const msg = document.createElement('div');
     msg.textContent = text;
+
     const btn = document.createElement('button');
     btn.textContent = 'Так, підтвердити!';
     btn.onclick = () => {
       onConfirm && onConfirm();
       hide();
+      clearTimeout(autoHide);
     };
+
     toast.append(msg, btn);
     container.append(toast);
 
     // показ
     requestAnimationFrame(() => toast.classList.add('show'));
 
-    // якщо потрібно автоматично ховатись через певний час — раскоментуйте
-    // setTimeout(hide, 5000);
+    // автоскривання через 5 сек
+    const autoHide = setTimeout(hide, 5000);
 
     function hide() {
       toast.classList.remove('show');
       toast.addEventListener('transitionend', () => toast.remove(), { once: true });
     }
   };
-})();
 
+})();

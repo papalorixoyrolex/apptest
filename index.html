@@ -140,8 +140,9 @@
     function removeEntry(id) {
       const container = document.getElementById('entries-container');
       const entries = container.querySelectorAll('.entry');
+      
       if (entries.length <= 1) {
-        showToast("Залиш хоча б одне поле 🙏", 3000);
+        showToast("Я його всеодно залишу..\nПоняв?", 2000);
         return;
       }
       const toRemove = container.querySelector(`[data-entry-id="${id}"]`);

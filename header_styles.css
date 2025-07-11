@@ -156,7 +156,7 @@ body {
   gap: 20px;
   align-items: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
   margin-bottom: 20px;
 }
 
@@ -170,7 +170,7 @@ body {
   gap: 20px;
   align-items: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
   margin-top: 20px;
 }
 
@@ -386,7 +386,7 @@ input::placeholder {
 }
 
 #entries-container {
-  max-width: 400px;
+  max-width: 360px;
 }
 
 /* ----- ФОРМА ----‑ */
@@ -400,7 +400,7 @@ input::placeholder {
   padding: 20px;
   box-shadow: var(--shadow);
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
   margin-bottom: 24px;
 }
 
@@ -496,16 +496,19 @@ input::placeholder {
 #toast-container {
   position: fixed;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
   width: 80vw;           /* 90% ширини вьюпорту */
-  max-width: 400px;      /* обмежуємо максимальну ширину */
+  max-width: 360px;      /* обмежуємо максимальну ширину */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
   z-index: 9999;
   pointer-events: none;  /* щоб кліки «пробивалися», коли тости не показані */
+}
+
+.toast {
+  opacity: 0;                   /* додано */
+  transition: opacity 0.4s ease;/* замість transform */
 }
 
 .toast {
@@ -516,8 +519,8 @@ input::placeholder {
   font-size: var(--toast-font-size);
   width: 100%;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  opacity: 0;
+  transition: opacity 0.4s ease;
   pointer-events: auto;
   text-align: center;
 }
@@ -525,7 +528,6 @@ input::placeholder {
 /* коли додаємо клас .show, тост оживає */
 .toast.show {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* версія з підтвердженням */
