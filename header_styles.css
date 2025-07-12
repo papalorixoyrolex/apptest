@@ -238,7 +238,7 @@ textarea::placeholder, input::placeholder {
 #entry-heading:hover,
 #entry-heading:hover,
 #toggle-archive-btn:hover,
-#add-task-btn:hover {
+#add-task-btn:hover{
   -webkit-tap-highlight-color: transparent;
   background: var(--background-button-underheader-hover);
   background-size: 400% 400%;
@@ -246,6 +246,27 @@ textarea::placeholder, input::placeholder {
   transform: scale(1.05);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
 }
+
+#clear-history-container {
+  background: var(--background-button-underheader);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  text-align: center;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: 600;
+  font-size: 18px;
+  margin: 20px auto;
+  width: fit-content;
+}
+
+#clear-history-container:hover {
+  background: var(--background-button-underheader-hover);
+  transform: scale(1.04);
+}
+
 
 @keyframes shiftGradient {
   0% { background-position: 0% 50%; }

@@ -8,7 +8,7 @@ const ASSETS_TO_CACHE = [
   '/habits.html',
   '/history.html',
   '/task.html',
-  '/swipe-nan.js'
+  '/swipe-nav.js'
 ];
 
 self.addEventListener('install', e => {

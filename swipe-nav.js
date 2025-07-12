@@ -27,38 +27,34 @@
       }
     });
   }
+})();
 
+// ======= TOASTS =======
+(() => {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.append(container);
+  }
 
-  // ======= TOASTS =======
-  // створюємо контейнер один раз
-  const container = document.createElement('div');
-  container.id = 'toast-container';
-  document.body.append(container);
+  window.showToast = function (text, duration = 2000) {
+    container.innerHTML = '';
 
-  window.showToast = function(text, duration = 2000) {
-  container.innerHTML = '';
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = text;
+    container.append(toast);
 
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.innerText = text;
-  container.append(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
 
-  requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+    }, duration);
+  };
 
-  setTimeout(() => {
-    toast.classList.remove('show');
-    toast.addEventListener('transitionend', () => toast.remove(), { once: true });
-  }, duration);
-};
-
-
-  /**
-   * Тост з кнопкою підтвердження
-   * @param {string} text — повідомлення
-   * @param {Function} onConfirm — колбек «Так»
-   */
-  window.showConfirmToast = function(text, onConfirm) {
-    // Видаляємо всі попередні
+  window.showConfirmToast = function (text, onConfirm) {
     container.innerHTML = '';
 
     const toast = document.createElement('div');
@@ -69,6 +65,7 @@
 
     const btn = document.createElement('button');
     btn.textContent = 'Так, підтвердити!';
+    btn.className = 'confirm-btn';
     btn.onclick = () => {
       onConfirm && onConfirm();
       hide();
@@ -78,10 +75,8 @@
     toast.append(msg, btn);
     container.append(toast);
 
-    // показ
     requestAnimationFrame(() => toast.classList.add('show'));
 
-    // автоскривання через 5 сек
     const autoHide = setTimeout(hide, 5000);
 
     function hide() {
@@ -89,5 +84,6 @@
       toast.addEventListener('transitionend', () => toast.remove(), { once: true });
     }
   };
-
 })();
+
+

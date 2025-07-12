@@ -1,154 +1,109 @@
-  <!DOCTYPE html>
-  <html lang="uk">
-  <head>
-      <link rel="stylesheet" href="header_styles.css">
-      <link rel="icon" href="favicon.png" type="image/png">
-      <link rel="apple-touch-icon" href="favicon.png">
-      <meta name="theme-color" content="#ffffff">
-      <meta name="mobile-web-app-capable" content="yes">
-      <meta name="apple-mobile-web-app-capable" content="yes">
-      <meta name="apple-mobile-web-app-title" content="НазваДодатку">
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>testisquitcc</title>
 
-      <link rel="manifest" href="manifest.json">
-      <title>Історія</title>
-    
+  <link rel="stylesheet" href="header_styles.css">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="НазваДодатку">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    .entry-card {
+  background: var(--bg-lightest);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 16px auto;
+  max-width: 360px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-    <style>
-      h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
-      }
+.entry-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+}
 
-      ul {
-        list-style: none;
-        padding: 0;
-        max-width: 600px;
-        width: 100%;
-      }
+    .entry-card .entry-full {
+      display: none;
+      margin-top: 10px;
+    }
+    .entry-card.expanded .entry-full {
+      display: block;
+    }
+    .toggle-btn, .hide-btn, .delete-btn {
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    .hide-btn {
+      display: none;
+    }
+    .entry-card.expanded .toggle-btn {
+      display: none;
+    }
+    .entry-card.expanded .hide-btn {
+      display: inline-block;
+    }
 
-      li {
-        position: relative;
-        max-width: 80%;
-        margin-bottom: 10px;
-        padding: 8px;
-        border-left: 5px solid #aaa;
-        border-radius: 6px;
-        white-space: pre-wrap;
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-      }
+    .toggle-btn, .hide-btn {
+  background-color: var(--bg-lightest);
+  color: var(--text-strong);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: var(--shadow);
+}
 
-      .delete-btn {
-        position: absolute;
-        top: 0px;
-        right: -18%;
-        color: white;
-        border: none;
-        padding: 4px 8px;
-        font-size: 14px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-
-      a {
-        margin-top: 20px;
-        text-decoration: none;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 8px;
-      }
-
-    .history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* Стиль заголовка */
-  .history-header h1 {
-    margin: 0;
-    font-size: 24px;
-  }
-
-  /* Контейнер-кнопка, що створює рамку і тінь, але не клікабельна */
-  .clear-btn-container {
-    display: inline-flex;
-    align-items: center;
-    padding: 5px 18px;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    
-    /* Біло-молочний градієнт */
-    background: linear-gradient(135deg, #f9f9f9 0%, #f0ece6 100%);
-    
-    user-select: none;
-    pointer-events: none; /* блокує кліки на контейнер */
-    transition: box-shadow 0.3s ease;
-  }
+.toggle-btn:hover,
+.hide-btn:hover {
+  background-color: #3a3a3a; /* трохи світліший варіант */
+  transform: scale(1.05);
+}
 
 
-  /* При наведенні легка "глибина" */
-  .clear-btn-container:hover {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  }
-
-  /* Власне кнопка видаляти */
-  .clear-btn {
-    pointer-events: auto; /* дозволяє кліки всередині */
-    background: #ff4d4d;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 20px;
-    width: 38px;
-    height: 38px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
-  }
-
-  .clear-btn:hover {
-    background: #e60000;
-  }
-
-
-  .clear-btn {
-    background: #f44336;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .clear-btn:hover {
-    background: #c62828;
-  }
-</style>
-
-    
-  </head>
-  <body>
-
-
-
-
-
-
-
-  <div class="nav-bar">
+    .date-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      color: var(--text-main);
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .response-item {
+      padding: 6px 0;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .response-item:first-child {
+      border-top: none;
+    }
+    .response-item p {
+      margin: 4px 0 0;
+      flex: 1;
+    }
+    .meta-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="nav-bar">
     <button data-page="index.html" onclick="location.href='index.html'">
       <div class="icon">✍️</div>
       <div class="label">Записи</div>
@@ -167,158 +122,118 @@
     </button>
   </div>
 
-
-  <div id="clear-history-container">
-    <h1 id="entry-heading" onclick="clearEntries()">
-      Очистити історію
-    </h1>
-  </div>
+  <h1 id="entry-heading"><a href="index.html" style="all: unset; cursor: pointer;">Додати запис ✍️</a></h1>
 
 
-  <div id="empty-message" style="
-    display: none;
-    text-align: center;
-    margin-top: 100px;
-    font-size: 20px;
-    color: #666;
-    font-style: italic;
-    user-select: none;
-  ">
+  <div id="clear-history-container" onclick="clearEntries()">Очистити історію 🗑️</div>
+
+  <div id="empty-message" style="display:none; text-align:center; margin-top:100px; color:#666; font-style:italic;">
     Історія записів порожня.
   </div>
-
   <div id="entries-container"></div>
 
-
-    <ul id="log"></ul>
-
-    <script>
-    function showEntries() {
-    const container = document.getElementById('entries-container');
-    const message = document.getElementById('empty-message');
-    const clearButtonContainer = document.getElementById('clear-history-container');
-    container.innerHTML = '';
-
-    const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
-
-    if (log.length === 0) {
-      message.style.display = 'block';
-      if (clearButtonContainer) clearButtonContainer.style.display = 'none';
-      return;
-    } else {
-      message.style.display = 'none';
-      if (clearButtonContainer) clearButtonContainer.style.display = 'block';
-    }
-
-    log.forEach((entry, dayIndex) => {
-
-      const entryDiv = document.createElement('div');
-      entryDiv.style.marginBottom = '20px';
-      entryDiv.style.borderLeft = '5px solid #aaa';
-      entryDiv.style.paddingLeft = '10px';
-
-      const dateEl = document.createElement('div');
-      dateEl.textContent = `Начіркав: ${entry.date}`;
-      dateEl.style.fontWeight = 'bold';
-      dateEl.style.marginBottom = '6px';
-      entryDiv.appendChild(dateEl);
-      
-
-      const list = document.createElement('ul');
-      list.style.listStyle = 'none';
-      list.style.padding = '0';
-
-      entry.responses.forEach((response, responseIndex) => {
-
-    const item = document.createElement('li');
-
-// Створюємо контейнер для тексту й кнопки
-item.innerHTML = `
-  <span class="entry-text">${response.text} ${response.emoji || ''}</span>
-  <button class="delete-btn" title="Видалити запис">❌</button>
-`;
-
-const deleteBtn = item.querySelector('.delete-btn');
-deleteBtn.onclick = () => deleteSingleResponse(dayIndex, responseIndex);
-
-list.appendChild(item);
-    });
-
-
-      entryDiv.appendChild(list);
-      container.appendChild(entryDiv);
-    });
-  }
-
-
-
-
-      function deleteEntry(index) {
-        const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
-        if (confirm("Видалити цей запис?")) {
-          log.splice(index, 1);
-          localStorage.setItem('moodLog', JSON.stringify(log));
-          showEntries();
-        }
+  <script>
+      function showEntries() {
+      const container = document.getElementById('entries-container');
+      const emptyMsg = document.getElementById('empty-message');
+      const clearBtn = document.getElementById('clear-history-container');
+      container.innerHTML = '';
+      const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+      if (!log.length) {
+        emptyMsg.style.display = 'block';
+        clearBtn.style.display = 'none';
+        return;
       }
+      emptyMsg.style.display = 'none';
+      clearBtn.style.display = 'block';
+
+      const grouped = {};
+      log.forEach((entry, dayIndex) => {
+        const date = entry.date;
+        if (!grouped[date]) grouped[date] = [];
+        entry.responses.forEach((resp, respIndex) => {
+          grouped[date].push({ dayIndex, respIndex, resp });
+        });
+      });
+
+      Object.keys(grouped).forEach(date => {
+        const items = grouped[date];
+        const card = document.createElement('div');
+        card.className = 'entry-card';
+
+        const header = document.createElement('div');
+        header.className = 'date-header';
+        const dateSpan = document.createElement('span');
+        dateSpan.textContent = date;
+        const btnContainer = document.createElement('div');
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'toggle-btn';
+        toggleBtn.textContent = 'Підглянути 👀';
+        const hideBtn = document.createElement('button');
+        hideBtn.className = 'hide-btn';
+        hideBtn.textContent = 'Сховати';
+        btnContainer.append(toggleBtn, hideBtn);
+        header.append(dateSpan, btnContainer);
+
+        const fullDiv = document.createElement('div');
+        fullDiv.className = 'entry-full';
+
+        items.forEach(item => {
+          const { dayIndex, respIndex, resp } = item;
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'response-item';
+
+          const textP = document.createElement('p');
+          textP.textContent = resp.text + (resp.emoji || '');
+
+          const controlsDiv = document.createElement('div');
+          controlsDiv.className = 'meta-controls';
+
+          const timeSpan = document.createElement('span');
+          timeSpan.textContent = resp.time || '';
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'delete-btn';
+          delBtn.textContent = '❌';
+          delBtn.title = 'Видалити запис';
+
+          controlsDiv.append(timeSpan, delBtn);
+          itemDiv.append(textP, controlsDiv);
+          fullDiv.appendChild(itemDiv);
+
+          delBtn.onclick = () => deleteSingleResponse(dayIndex, respIndex);
+        });
+
+        card.append(header, fullDiv);
+        container.appendChild(card);
+
+        toggleBtn.onclick = () => card.classList.add('expanded');
+        hideBtn.onclick = () => card.classList.remove('expanded');
+      });
+    }
 
     function deleteSingleResponse(dayIndex, responseIndex) {
-  showConfirmToast(
-    'Ви впевнені, що хочете видалити цей запис?',
-    () => {
+      if (!confirm('Видалити цей запис?')) return;
       const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
       log[dayIndex].responses.splice(responseIndex, 1);
-      if (log[dayIndex].responses.length === 0) {
-        log.splice(dayIndex, 1);
-      }
+      if (!log[dayIndex].responses.length) log.splice(dayIndex, 1);
       localStorage.setItem('moodLog', JSON.stringify(log));
       showEntries();
-      showToast('Запис видалено.');
     }
-  );
-}
 
+    function clearEntries() {
+      const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
+      if (!log.length) return alert('Немає записів для видалення');
+        showConfirmToast('Видалити всю історію?', () => {
+        localStorage.removeItem('moodLog');
+        showEntries();
+      });
 
-
-      showEntries();
-
-
-  let undoTimeout;
-  let backupLog = null;
-
-  function clearEntries() {
-  const log = JSON.parse(localStorage.getItem('moodLog') || '[]');
-  if (log.length === 0) {
-    showToast("Немає записів для видалення.");
-    return;
-  }
-
-  showConfirmToast(
-    'Ви впевнені, що хочете очистити всю історію?',
-    () => {
-      localStorage.removeItem('moodLog');
-      showEntries();
-      showToast("Усі записи видалено.");
     }
-  );
-}
 
-
-
-  function hideUndoToast() {
-    const toast = document.getElementById('undo-toast');
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(-50%) scale(0.9)';
-    setTimeout(() => {
-      toast.style.display = 'none';
-      toast.innerHTML = '';
-    }, 300);
-  }
-
-    </script>
-<div id="toast-container"></div>
-    <script defer src="serviceWorker.js"></script>
- <script src="swipe-nav.js"></script>
- 
+    showEntries();
+  </script>
+  <div id="toast-container"></div>
+<script src="swipe-nav.js"></script>
 </body>
-  </html>
+</html>
